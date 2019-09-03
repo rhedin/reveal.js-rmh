@@ -1,4 +1,5 @@
 const sass = require('node-sass');
+var connectSSI = require('connect-ssi');
 
 module.exports = grunt => {
 
@@ -101,6 +102,20 @@ module.exports = grunt => {
 		},
 
 		connect: {
+			options: {
+				middleware: function(connect, options, middlewares) {
+					if (!Array.isArray(options.base)) {
+						options.base = [options.base];
+					}
+					var directory = options.directory || options.base[options.base.length - 1];
+		
+					middlewares.unshift(connectSSI({
+						baseDir: directory,
+						ext: '.html'
+					}));                
+					return middlewares;
+				}
+			},		
 			server: {
 				options: {
 					port: port,
